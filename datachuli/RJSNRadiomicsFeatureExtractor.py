@@ -267,6 +267,6 @@ if __name__ == '__main__':
     extractor = RadiomicsFeatureExtractor(r'RadiomicsParams.yaml',
                                           has_label=False, ignore_tolerence=False)
     extractor.Execute(r'D:\python\dataset\GBM-radiomics\GBM-Radiomics map',     #
-                      key_name_list=['DSC.nii'],
-                      roi_key=['roi_1.nii'],
-                      store_path=r'D:\python\dataset\GBM-radiomics\DSC\feature.csv')
+                      key_name_list=['T1.nii'],
+                      roi_key=['roi_3.nii'],
+                      store_path=r'D:\python\dataset\GBM-radiomics\ki67\T1-3\feature.csv')
