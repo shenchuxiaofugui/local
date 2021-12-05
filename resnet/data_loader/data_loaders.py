@@ -1,33 +1,24 @@
+from torchvision import datasets, transforms
+from base import BaseDataLoader
 import os
 import SimpleITK as sitk
-import numpy as np
 import torch
 from torch.utils.data import Dataset
-import torchvision.transforms as transforms
-from PIL import Image
 
 
-# class CreateNiiDataset(Dataset):
-#     def __init__(self, dataroot, transform=None, target_transform=None):
-#         self.path1 = dataroot  # parameter passing
-#         self.A = 'MR'
-#         self.B = 'CT'
-#         lines = os.listdir(os.path.join(self.path1, self.A))
-#         lines.sort()
-#         imgs = []
-#         for line in lines:
-#             imgs.append(line)
-#         self.imgs = imgs
-#         self.transform = transform
-#         self.target_transform = target_transform
-#
-#     def crop(self, image, crop_size):
-#         shp = image.shape
-#         scl = [int((shp[0] - crop_size[0]) / 2), int((shp[1] - crop_size[1]) / 2)]
-#         image_crop = image[scl[0]:scl[0] + crop_size[0], scl[1]:scl[1] + crop_size[1]]
-#         return image_crop
-#
 
+class MnistDataLoader(BaseDataLoader):
+    """
+    MNIST data loading demo using BaseDataLoader
+    """
+    def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=1, training=True):
+        trsfm = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize((0.1307,), (0.3081,))
+        ])
+        self.data_dir = data_dir
+        self.dataset = datasets.MNIST(self.data_dir, train=training, download=True, transform=trsfm)
+        super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
 
 
 class CreateNiiDataset(Dataset):
@@ -77,6 +68,9 @@ class CreateNiiDataset(Dataset):
     def __len__(self):
         return len(self.label)
 
+    def length(self):
+        return len(self.label)
+
     def select_roi(self, number = 1):
         fin_data = []
         i = 0
@@ -96,3 +90,12 @@ class CreateNiiDataset(Dataset):
             max_slice = torch.index_select(data_img, 0, indices).type(torch.cuda.FloatTensor)
             fin_data.append(max_slice)
         self.fin_data = fin_data
+
+
+class ClassDataLoader(BaseDataLoader):
+
+    def __init__(self, data_dir, modals, batch_size, shuffle=True, validation_split=0.0, num_workers=1, use_roi=True, transform=None):
+        self.data_dir = data_dir
+        self.dataset = CreateNiiDataset(self.data_dir, modals, use_roi, transform)
+        self.dataset.select_roi(3)
+        super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)

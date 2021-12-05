@@ -18,7 +18,7 @@ import pickle
 import matplotlib.pyplot as plt
 import time
 import os
-from dataload import CreateNiiDataset1
+from dataload import CreateNiiDataset
 
 from model import Classifier1
 
@@ -49,7 +49,7 @@ test_tfm = transforms.Compose([
 # batch_size = 200
 
 # Construct datasets.
-custom_data = CreateNiiDataset1('test', ['T1'], use_roi=True)
+custom_data = CreateNiiDataset('test', ['T1'], use_roi=True)
 custom_data.select_roi(3)
 
 # with open('1.pkl', 'wb') as file:

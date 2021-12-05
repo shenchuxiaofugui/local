@@ -1,3 +1,4 @@
-import torchmetrics
-print(help(torchmetrics.AUC.))
+import os
+a = os.getcwd()
+print(a)
 
