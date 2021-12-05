@@ -7,6 +7,7 @@ from shutil import copytree, ignore_patterns
 # Run `python3 new_project.py ../MyNewProject` then new project named 
 # MyNewProject will be made
 current_dir = Path()
+print('aaaa')
 assert (current_dir / 'new_project.py').is_file(), 'Script should be executed in the pytorch-template directory'
 assert len(sys.argv) == 2, 'Specify a name for the new project. Example: python3 new_project.py MyNewProject'
 
