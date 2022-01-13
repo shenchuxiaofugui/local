@@ -6,6 +6,8 @@ import copy
 import logging
 import SimpleITK as sitk
 import glob
+import numpy as np
+from skimage import exposure
 
 
 class RadiomicsFeatureExtractor:
@@ -26,19 +28,38 @@ class RadiomicsFeatureExtractor:
 
     def __GetFeatureValuesEachModality(self, data_path, roi_path, key_name):
         if self.__is_ignore_tolerence:
-            image = sitk.ReadImage(data_path)
+            # -----------------------------------------------------
+
+            # -----------------------------------------------------
+            # image = sitk.ReadImage(data_path)
+            # roi_image = sitk.ReadImage(roi_path)
+            # roi_image.CopyInformation(image)
+            # image_array = sitk.GetArrayFromImage(image)
+            #
+            # image_array = np.clip(image_array, np.percentile(image_array, 0.05), np.percentile(image_array, 99.5))
+            #
+            # roi_array = sitk.GetArrayFromImage(roi_image)
+            # roi_sum = roi_array.sum(axis=(1, 2))
+            # roi_max = roi_array[roi_sum.argmax(), :, :]
+            # image_max = image_array[roi_sum.argmax(), :, :]
+            # new_image = sitk.GetImageFromArray(image_max)
+            # new_roi = sitk.GetImageFromArray(roi_max)
+            # result = self.extractor.execute(new_image, new_roi)
+            # -----------------------------------------------------
+            raw_image = sitk.ReadImage(data_path)
             roi_image = sitk.ReadImage(roi_path)
-            roi_image.CopyInformation(image)
+            roi_image.CopyInformation(raw_image)
+            img_arr = sitk.GetArrayFromImage(raw_image)
+            img_arr = np.clip(img_arr, 0, np.percentile(img_arr, 99.95))
+            #img_arr = exposure.equalize_adapthist(img_arr)  #histogram equalization + gui yi hua
+            # img_arr[img_arr>255.0] = 255.0
+
+            img_arr = (img_arr-np.min(img_arr))/(np.max(img_arr) - np.min(img_arr))
+            #img_arr = (img_arr - np.mean(img_arr)) / np.std(img_arr)
+            image = sitk.GetImageFromArray(img_arr)
+            image.CopyInformation(raw_image)
+            result = self.extractor.execute(image, roi_image)
             # -----------------------------------------------------
-            image_array = sitk.GetArrayFromImage(image)
-            roi_array = sitk.GetArrayFromImage(roi_image)
-            roi_sum = roi_array.sum(axis=(1, 2))
-            roi_max = roi_array[roi_sum.argmax(), :, :]
-            image_max = image_array[roi_sum.argmax(), :, :]
-            new_image = sitk.GetImageFromArray(image_max)
-            new_roi = sitk.GetImageFromArray(roi_max)
-            # -----------------------------------------------------
-            result = self.extractor.execute(new_image, new_roi)
         else:
             result = self.extractor.execute(data_path, roi_path)
 
@@ -264,9 +285,9 @@ class RadiomicsFeatureExtractor:
 
 if __name__ == '__main__':
     # 读取3D的时候把ignore_tolerence改为False
-    extractor = RadiomicsFeatureExtractor(r'RadiomicsParams.yaml',
-                                          has_label=False, ignore_tolerence=False)
-    extractor.Execute(r'\\mega\syli\dataset\neimo\eaoc',     #
-                      key_name_list=['ADC.nii'],
-                      roi_key=['ADC_roi.nii.gz'],
-                      store_path=r'\\mega\syli\dataset\neimo\ADC_feature.csv')
+    extractor = RadiomicsFeatureExtractor(r'C:\Users\handsome\Desktop\jiaoben\datachuli\RadiomicsParams.yaml',
+                                          has_label=False, ignore_tolerence=True)
+    extractor.Execute(r'\\mega\syli\dataset\Primary and metastatic\Primary',     #
+                      key_name_list=['T1.nii'],
+                      roi_key=['T1_roi.nii.gz'],
+                      store_path=r'\\mega\syli\dataset\Primary and metastatic\test\T1\T1_feature_bcount1.csv')

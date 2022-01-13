@@ -50,7 +50,7 @@ test_tfm = transforms.Compose([
 
 # Construct datasets.
 custom_data = CreateNiiDataset('test', ['T1'], use_roi=True)
-custom_data.select_roi(3)
+custom_data.select_roi(32)
 
 # with open('1.pkl', 'wb') as file:
 #     pickle.dump(custom_data, file)
@@ -92,7 +92,7 @@ model.device = device
 criterion = nn.CrossEntropyLoss()
 
 # Initialize optimizer, you may fine-tune some hyperparameters such as learning rate on your own.
-optimizer = torch.optim.Adam(model.parameters(), lr=0.0003, weight_decay=1e-3)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.0003, weight_decay=1e-3, betas=(0.85,0.999))
 
 # The number of training epochs.
 n_epochs = 20
