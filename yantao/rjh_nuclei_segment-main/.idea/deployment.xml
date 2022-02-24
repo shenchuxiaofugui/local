@@ -5,7 +5,8 @@
       <paths name="syli@219.228.149.72:22">
         <serverdata>
           <mappings>
-            <mapping deploy="/python/jiaoben" local="$PROJECT_DIR$" web="/" />
+            <mapping deploy="/python/yantao/dada" local="$PROJECT_DIR$" web="" />
+            <mapping local="" />
           </mappings>
         </serverdata>
       </paths>

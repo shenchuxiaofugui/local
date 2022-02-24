@@ -8,6 +8,7 @@ from PIL import Image
 from pathlib import Path
 import numpy as np
 import logging
+import torchvision.transforms.functional as F
 
 
 class MnistDataLoader(BaseDataLoader):
@@ -29,7 +30,8 @@ class CreateNiiDataset(Dataset):
         self.fin_data = []
         self.label = []
         self.roi_data = []
-        self.transform=None
+        self.transform = None
+        self.casename = []
         for files in os.listdir(filepath):
             paths = os.path.join(filepath,files)
             lines = os.listdir(paths)  #os.path.join(self.path1, self.A)
@@ -43,20 +45,22 @@ class CreateNiiDataset(Dataset):
                         roi_img = sitk.ReadImage(os.path.join(paths, line, single_img[:-4]+'_roi.nii.gz'))
                         roi_data = sitk.GetArrayFromImage(roi_img)
                         roi_tensor = torch.from_numpy(roi_data/1.0)
-                        self.roi_data.append(roi_tensor)
                         if use_roi:
                             fin_tensor = data1_tensor * roi_tensor
 
                         else:
                             fin_tensor = data1_tensor
-                        # if transform is not None:
-                        #     print(fin_tensor.shape)
-                        #     img2 = fin_tensor.numpy().transpose(1, 2, 0)
-                        #     img3 = Image.fromarray(np.uint8(img2))
-                        #     fin_tensor = transform(img3)
-                        fin_tensor = fin_tensor.resize_(fin_tensor.shape[0], 224, 224)
+                        if transform is not None:
+                            # img2 = fin_tensor.numpy().transpose(1, 2, 0)
+                            # img3 = Image.fromarray(np.uint8(img2))
+                            fin_tensor = transform(fin_tensor)
+                            roi_tensor = transform(roi_tensor)
+                        else:
+                            fin_tensor = F.resize(fin_tensor, [224, 224], interpolation=3)
+                        self.roi_data.append(roi_tensor)
                         self.fin_data.append(fin_tensor)
                         self.label.append(eval(files))
+                        self.casename.append(files+single_img[:-4])
 
     def __getitem__(self, index):
         data = self.fin_data[index]
@@ -71,11 +75,9 @@ class CreateNiiDataset(Dataset):
     def __len__(self):
         return len(self.label)
 
-    def length(self):
-        return len(self.label)
-
     def select_roi(self, number = 1):
         fin_data = []
+        fin_roi = []
         i = 0
         for roi_img, data_img in zip(self.roi_data, self.fin_data):
             roi_size = []
@@ -91,8 +93,24 @@ class CreateNiiDataset(Dataset):
             indices = torch.LongTensor(c)
             # print(c)
             max_slice = torch.index_select(data_img, 0, indices).type(torch.cuda.FloatTensor)
+            max_roi = torch.index_select(roi_img, 0, indices).type(torch.cuda.FloatTensor)
             fin_data.append(max_slice)
+            fin_roi.append(max_roi)
         self.fin_data = fin_data
+        self.roi_data = fin_roi
+
+    def daochu(self, path):
+        for i in range(len(self.label)):
+            img = self.fin_data[i].cpu()
+            img = np.uint8(img).transpose(1, 2, 0)
+            img = Image.fromarray(img)
+            print(path + f'\\imgs\\{self.casename[i]}.jpg')
+            print(path + f'/imgs/{self.casename[i]}.jpg')
+            img.save(path + f'/imgs/{self.casename[i]}.jpg')
+            roi = self.roi_data[i].cpu()
+            roi = np.uint8(roi).transpose(1, 2, 0)
+            roi = Image.fromarray(roi)
+            roi.save(path + f'/masks/{self.casename[i]}.jpg')
 
 
 class ClassDataLoader(BaseDataLoader):

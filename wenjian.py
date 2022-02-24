@@ -39,7 +39,7 @@ def rename(filepath, modals):
     filename = os.path.basename(filepath)
     filename = filename.upper()
     #filename = filename.replace('TI', 'T1')
-    filename = filename.replace('T1C+', 'T1+')
+    filename = filename.replace('T1+', 'T1CE')
     if filename[-3:] == 'NII':
         houzhui = '.nii'
     else:
@@ -48,7 +48,7 @@ def rename(filepath, modals):
     for modal in modals:
         if modal in filename:
             if modal == 'T1':
-                if 'T1+' not in filename:
+                if 'T1CE' not in filename:
                     new_name = os.path.join(new_path, 'T1') + houzhui
             elif modal == 'SAG':
                 new_name = os.path.join(new_path, 'T2_SAG') + houzhui
@@ -73,22 +73,20 @@ def batch_rename(filepath, modals):
             rename(os.path.join(path, file), modals)
 
 
-def check(filepath, number, length=20, check_none=False, check_duiying=False):
+def check(filepath, modals):
     #检查所有文件是否齐全，一一对应，number是文件夹里面应该有的文件数，length是文件名长度应该小于length，check_none检查有没有空的文件
     files = os.listdir(filepath)
+    all_file = []
+    for modal in modals:
+        all_file.append(modal + '.nii')
+        all_file.append(modal + '_roi.nii.gz')
+    all_file.sort()
     for file1 in files:
         path = os.path.join(filepath, file1)
         dirs = os.listdir(path)
-        if len(dirs) != number:
+        if dirs != all_file:
             print(file1, len(dirs))
-        for file in dirs:
-            if len(file) > length:
-                print(file1, file)
-            if check_none:
-                img = sitk.ReadImage(os.path.join(path, file))
-                img_array = sitk.GetArrayFromImage(img)
-                if img_array.sum() == 0:
-                    print(file1, file, 'none')
+            print(dirs)
 
 
 def change_case_name(filepath, line='Name', save=False):
@@ -109,6 +107,7 @@ def change_file_name(filepath, df):
     #将病人的文件夹名由拼音改到ID
     files = os.listdir(filepath)
     ids = change_case_name(df)
+    #os.rename(os.path.join(new_path, dir), os.path.join(new_path, ''.join(list(filter(str.isdigit, dir)))))
     for file in files:
         try:
             new_name = os.path.join(filepath, ids[file])
@@ -140,10 +139,43 @@ def rename_2(filepath):
                                 print(e)
 
 
+def rename_3(filepath, modals):
+    #针对roi文件没有写模态，批量改名
+    files = os.listdir(filepath)
+    for file1 in files:
+        path = os.path.join(filepath, file1)
+        if os.path.isdir(path):
+            dirs = os.listdir(path)
+            for file in dirs:
+                filename = file.upper()
+                for modal in modals:
+                    if modal in filename:
+                        if modal == 'T1':
+                            if 'T1+' not in filename:
+                                new_name = os.path.join(path, 'T1')
+                        # elif modal == 'SAG':
+                        #     new_name = os.path.join(new_path, 'T2_SAG') + houzhui
+                        elif modal == 'T1+':
+                            new_name = os.path.join(path, 'T1CE')
+                        else:
+                            new_name = os.path.join(path, modal)
+                        if filename[-3:] == 'NII':
+                            new_name = new_name + '.nii'
+                        else:
+                            new_name = new_name + '_roi.nii.gz'
+                        try:
+                            os.rename(os.path.join(path, file), new_name)
+                        except (Exception, BaseException) as e:
+                            print(path)
+                            print(e)
+
+
+
+
 def check_roi(filepath):
     dirs = os.listdir(filepath)
-    #for dir in dirs:
-    for dir in ['5083585', '5379464', '5469332']:
+    for dir in dirs:
+    #for dir in ['5083585', '5379464', '5469332']:
         path = os.path.join(filepath, dir)
         files = os.listdir(path)
         for file in files:
@@ -184,14 +216,14 @@ def check_dirs(df_path, key, dirpath):
 
 
 path = r'\\mega\syli\dataset\EC_seg\EC-old'     #所有文件在一个文件夹，那个文件夹的地址
-new_path = r'\\mega\syli\dataset\EC_seg\EC-old1'   #要整理到新的文件夹的地址
+new_path = r'\\mega\MRIData\Red-House\EC_seg\clear_up\EC-old'   #要整理到新的文件夹的地址
 df_path = r'\\mega\syli\dataset\EC_seg\process_old_EC_seg(WTP)\process_old_EC1.csv'     #病人信息表的地址（ID在第一列）
-modals = ['T1+', 'DWI', 'SAG']   #这次有哪些模态
-guina(path, new_path)    #整理文件到新地址
+modals = ['T1+', 'DWI', 'T2']   #这次有哪些模态
+#guina(path, new_path)    #整理文件到新地址
 #change_file_name(new_path, df_path)     #修改文件夹的名字
-rename_2(new_path)        #针对nii文件名字没有模态信息，但是roi文件名由模态信息，且roi文件模态前的字符与原图一一对应
+#rename_3(new_path, modals)        #针对nii文件名字没有模态信息，但是roi文件名由模态信息，且roi文件模态前的字符与原图一一对应
 #batch_rename(new_path, modals)        #批量修改每个文件的名字（roi得是gz结尾）
-#check(new_path, 6, check_none=False)       #第二个参数是文件里应该有的文件数,check_none检查有没有空的文件
+check(new_path, ['T1CE', 'DWI', 'T2'])       #第二个参数是文件里应该有的文件数,check_none检查有没有空的文件
 #check_roi(new_path)
 #check_dirs(df_path, '影像号', new_path)
 

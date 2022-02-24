@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from base import BaseModel
 from torchvision.models import resnet50
-from unet_parts import *
+#from unet_parts import *
 
 
 class MnistModel(BaseModel):
@@ -28,7 +28,11 @@ class Classifier(nn.Module):
     def __init__(self):
         super(Classifier, self).__init__()
 
-        self.resnet = resnet50(True, True)
+        self.resnet = resnet50(pretrained=True)
+        numFit = self.resnet.fc.in_features
+        self.resnet.fc = nn.Linear(numFit, 2)
+
+
 
     def forward(self, x):
 

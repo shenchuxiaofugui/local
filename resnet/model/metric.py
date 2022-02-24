@@ -1,5 +1,6 @@
 import torch
 import torchmetrics
+from sklearn.metrics import roc_auc_score
 
 
 def accuracy(output, target):
@@ -23,5 +24,12 @@ def top_k_acc(output, target, k=3):
 def AUC(output, target):
     with torch.no_grad():
         pred = torch.argmax(output, dim=1)
-        correct = torchmetrics.functional.auc(pred, target)
+        pred = pred.cpu().numpy()
+        target = target.cpu().numpy()
+        print(pred)
+        print(target)
+        #print('heheheheh', pred, target)
+        correct = roc_auc_score(target, pred)
+        print(correct)
     return correct
+
