@@ -7,8 +7,8 @@ import numpy as np
 # excel_path = r"Z:\WHJ\LYM\宫颈癌信息-处理后.xlsx"
 # data = pd.read_excel(excel_path, sheet_name='汇总', header=0)
 
-cases_path = r'\\mega\syli\dataset\EC_seg\EC-old1'
-modals = ['T1CE', 'T2', 'DWI']
+cases_path = r'\\mega\syli\dataset\EC'
+modals = ['T1CE', 'T2_SAG', 'DWI']
 cases = os.listdir(cases_path)
 cases.sort(reverse=False)
 #cases = cases[cases.index('5545498'):]

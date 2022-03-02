@@ -1,5 +1,6 @@
 import os
 #os.environ["CUDA_VISIBLE_DEVICES"] = 'MIG-GPU-4ef25685-6248-e9a8-f4bd-86cbf2763f38/1/0'
+os.environ["CUDA_VISIBLE_DEVICES"] = '1'
 import sys
 sys.path.append('/homes/ydwang/projects')
 from Dataset_all_roi import make_data_loaders

@@ -8,6 +8,7 @@ import volumentations as volumentations
 import pandas as pd
 from utils.my_utils import load_data, normalize
 os.environ["CUDA_VISIBLE_DEVICES"] = '3'
+from MeDIT.SaveAndLoad import LoadNiiData
 
 
 class Datasets3D(Dataset):
@@ -167,9 +168,9 @@ if __name__ == "__main__":
         print(np.max(seg_data))
         print(np.mean(images_data[0, 0, ...]))
         import matplotlib.pyplot as plt
-        plt.imshow(images_data[0, 0, 7, :, :], cmap='gray')
-        plt.show()
-        plt.imshow(images_data[0, 0, 16, :, :], cmap='gray')
+        plt.imshow(images_data[0, 0, 10, :, :], cmap='gray')
+        #plt.show()
+        plt.imshow(seg_data[0, 0, 15,:, :], cmap='gray')
         plt.show()
 
 
