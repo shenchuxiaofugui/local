@@ -286,8 +286,8 @@ class RadiomicsFeatureExtractor:
 if __name__ == '__main__':
     # 读取3D的时候把ignore_tolerence改为False
     extractor = RadiomicsFeatureExtractor(r'C:\Users\handsome\Desktop\jiaoben\datachuli\RadiomicsParams.yaml',
-                                          has_label=False, ignore_tolerence=True)
-    extractor.Execute(r'\\mega\syli\dataset\Primary and metastatic\Primary',     #
-                      key_name_list=['T1.nii'],
-                      roi_key=['T1_roi.nii.gz'],
-                      store_path=r'\\mega\syli\dataset\Primary and metastatic\test\T1\T1_feature_bcount1.csv')
+                                          has_label=False, ignore_tolerence=False)
+    extractor.Execute(r'\\mega\syli\dataset\EC_all\EC_all_process_data',     #
+                      key_name_list=['T1CE.nii'],
+                      roi_key=['T1CE_roi.nii.gz'],
+                      store_path=r'\\mega\syli\dataset\EC_all\yuchuli\T1CE\T1CE.csv')

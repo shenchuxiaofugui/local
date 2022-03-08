@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 import matplotlib.pyplot as plt
 
-dirpath = r'C:\Users\handsome\Documents\data\20220124\2'
+dirpath = r'C:\Users\handsome\Documents\data\20220124\1'
 savepath = r'C:\Users\handsome\Documents\data\20220124\max_roi'
 
 
@@ -31,12 +31,16 @@ def check_img_label(dir_path):
 
 
         roi_max_index = np.argmax(np.sum(roi_array, axis=(1,2)))
-        #roi_index = np.
+        #roi_index = [i for i, e in enumerate(np.sum(roi_array, axis=(1,2)).tolist()) if e != 0]
+        #print('ceng', roi_index)
+
+
 
         candidate_img = [i for i in i.glob('*BSpline*')]
         ori_img_path = str(candidate_roi[0]).replace('-label', '')
         ori_img = sitk.ReadImage(ori_img_path)
         ori_img_array = sitk.GetArrayFromImage(ori_img)
+        #for roi_max_index in roi_index:
         plt.figure(i.name, figsize=(18, 9))
         plt.subplot(2, 4, 1)
         title = candidate_roi[0].name.replace('-label', '')
@@ -56,8 +60,8 @@ def check_img_label(dir_path):
             img_array = sitk.GetArrayFromImage(sub_img)  # [slice index, x ,y]
             title = j.name[12:-7]
             show_img_label(img_array, roi_array, roi_max_index, title)
-        plt.savefig(savepath + '\\' + i.name + '.jpg')
-        plt.clf()
+        plt.savefig(savepath + '\\' + i.name + '_' +str(roi_max_index) +'.jpg')
+        plt.close()
 
 
 
