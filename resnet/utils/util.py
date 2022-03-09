@@ -5,6 +5,9 @@ from pathlib import Path
 from itertools import repeat
 from collections import OrderedDict
 import matplotlib.pyplot as plt
+import os
+from pathlib import Path
+import shutil
 
 
 def ensure_dir(dirname):
@@ -68,30 +71,6 @@ class MetricTracker:
         return dict(self._data.average)
 
 
-def load_checkpoint(model, checkpoint='No', optimizer='', loadOptimizer=False):
-    if checkpoint != 'No':
-        print("loading checkpoint...")
-        model_dict = model.state_dict()
-        modelCheckpoint = torch.load(checkpoint)
-        pretrained_dict = modelCheckpoint.state_dict()
-        # 过滤操作
-        new_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict.keys()}
-        model_dict.update(new_dict)
-        # 打印出来，更新了多少的参数
-        print('Total : {}, update: {}'.format(len(pretrained_dict), len(new_dict)))
-        model.load_state_dict(model_dict)
-        print("loaded finished!")
-        # 如果不需要更新优化器那么设置为false
-        if loadOptimizer == True:
-            optimizer.load_state_dict(modelCheckpoint['optimizer'])
-            print('loaded! optimizer')
-        else:
-            print('not loaded optimizer')
-    else:
-        print('No checkpoint is included')
-    return model, optimizer
-
-
 def load_checkpoint_1(model, checkpoint='No', optimizer='', loadOptimizer=False):
     if checkpoint != 'No':
         print("loading checkpoint...")
@@ -99,6 +78,7 @@ def load_checkpoint_1(model, checkpoint='No', optimizer='', loadOptimizer=False)
         print(','.join(map(str, sorted(model_dict.keys()))))
         #modelCheckpoint = torch.load(checkpoint)
         pretrained_dict = torch.load(checkpoint)
+        #pretrained_dict = modelCheckpoint.state_dict()
         # 过滤操作
         new_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict.keys()}
         print(','.join(map(str, sorted(new_dict.keys()))))
@@ -120,4 +100,16 @@ def metric_visualization(name, epoch, losses, path):
     plt.plot(range(epoch + 1), losses)
     plt.legend([name, f"valid_{name}"])
     plt.savefig(path, dpi=300)
+
+
+def split_dirs(sourcepath, storepath, formpath):
+    df = pd.read_excel(formpath).iloc[:, :2]
+    df = df.astype(dtype='str')
+    if not os.path.exists(os.path.join(storepath, '0')):
+        os.makedirs(os.path.join(storepath, '0'))
+        os.makedirs(os.path.join(storepath, '1'))
+    for index,row in df.iterrows():
+        dir = os.path.join(sourcepath, row['ID'])
+        storedir = os.path.join(storepath, row['淋巴结转移阳性'], row['ID'])
+        shutil.copytree(dir, storedir)
 
