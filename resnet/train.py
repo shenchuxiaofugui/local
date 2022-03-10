@@ -10,7 +10,7 @@ from parse_config import ConfigParser
 from trainer import Trainer
 from utils import prepare_device
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "1,2,3"
+#os.environ["CUDA_VISIBLE_DEVICES"] = "1,2,3    "
 
 
 # fix random seeds for reproducibility
@@ -34,6 +34,7 @@ def main(config):
     # prepare for (multi-device) GPU training
     device, device_ids = prepare_device(config['n_gpu'])
     model = model.to(device)
+    print(device)
     if len(device_ids) > 1:
         model = torch.nn.DataParallel(model, device_ids=device_ids)
 

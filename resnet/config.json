@@ -1,6 +1,6 @@
 {
     "name": "yixuefenlei_Net",
-    "n_gpu": 3,
+    "n_gpu": 1,
     "gpu_list": [1,2,3],
 
     "arch": {
@@ -11,9 +11,9 @@
         "type": "ClassDataLoader",
         "args":{
             "data_dir": "/homes/syli/dataset/resnet/EC_all",
-            "use_roi": "False",
-            "modals": ["T1CE", "DWI"],
-            "batch_size": 250,
+            "use_roi": false,
+            "modals": ["T1CE"],
+            "batch_size": 100,
             "shuffle": true,
             "validation_split": 0.2,
             "num_workers": 0
