@@ -1,6 +1,7 @@
 {
     "name": "yixuefenlei_Net",
     "n_gpu": 3,
+    "gpu_list": [1,2,3],
 
     "arch": {
         "type": "Classifier",
@@ -9,13 +10,13 @@
     "data_loader": {
         "type": "ClassDataLoader",
         "args":{
-            "data_dir": "/homes/syli/python/jiaoben/test_code/test",
+            "data_dir": "/homes/syli/dataset/resnet/EC_all",
             "use_roi": "False",
-            "modals": ["T1", "T2"],
-            "batch_size": 140,
+            "modals": ["T1CE", "DWI"],
+            "batch_size": 250,
             "shuffle": true,
             "validation_split": 0.2,
-            "num_workers": 4
+            "num_workers": 0
         }
     },
     "optimizer": {
@@ -38,7 +39,7 @@
         }
     },
     "trainer": {
-        "epochs": 30,
+        "epochs": 40,
 
         "save_dir": "saved/",
         "save_period": 1,

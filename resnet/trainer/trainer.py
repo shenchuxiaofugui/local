@@ -3,6 +3,7 @@ import torch
 from torchvision.utils import make_grid
 from base import BaseTrainer
 from utils import inf_loop, MetricTracker
+from tqdm import tqdm
 
 
 class Trainer(BaseTrainer):
@@ -39,7 +40,7 @@ class Trainer(BaseTrainer):
         """
         self.model.train()
         self.train_metrics.reset()
-        for batch_idx, (data, target) in enumerate(self.data_loader):
+        for batch_idx, (data, target) in tqdm(enumerate(self.data_loader)):
             data, target = data.to(self.device), target.to(self.device)
 
             self.optimizer.zero_grad()

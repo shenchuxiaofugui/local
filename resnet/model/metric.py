@@ -26,10 +26,7 @@ def AUC(output, target):
         pred = torch.argmax(output, dim=1)
         pred = pred.cpu().numpy()
         target = target.cpu().numpy()
-        print(pred)
-        print(target)
         #print('heheheheh', pred, target)
         correct = roc_auc_score(target, pred)
-        print(correct)
     return correct
 

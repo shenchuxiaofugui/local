@@ -114,7 +114,6 @@ class CreateNiiDataset(Dataset):
 
 
 class ClassDataLoader(BaseDataLoader):
-
     def __init__(self, data_dir, modals, batch_size, shuffle=True, validation_split=0.0, num_workers=1, use_roi=True, transform=None):
         self.data_dir = data_dir
         self.dataset = CreateNiiDataset(self.data_dir, modals, use_roi, transform)
