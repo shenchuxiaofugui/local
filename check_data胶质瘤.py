@@ -26,8 +26,9 @@ for case in cases[0:]:
 
         _, nii_data, _ = LoadNiiData(images_path)
         _, roi_data, _ = LoadNiiData(roi_path)
-        nii_data = np.clip(nii_data, 0, np.percentile(nii_data, 99.95))
-        nii_data = (nii_data-np.min(nii_data))/(np.max(nii_data) - np.min(nii_data))
+        _, roi_data, _ = LoadNiiData(roi_path)
+        # nii_data = np.clip(nii_data, 0, np.percentile(nii_data, 99.95))
+        # nii_data = (nii_data-np.min(nii_data))/(np.max(nii_data) - np.min(nii_data))
         Imshow3DArray(nii_data, roi_data)
     # for image in images:
     #     if 'Scene' in image or 'Segmentation' in image:

@@ -13,7 +13,7 @@
             "data_dir": "/homes/syli/dataset/resnet/EC_all",
             "use_roi": false,
             "modals": ["T1CE"],
-            "batch_size": 100,
+            "batch_size": 40,
             "shuffle": true,
             "validation_split": 0.2,
             "num_workers": 0

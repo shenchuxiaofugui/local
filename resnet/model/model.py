@@ -1,8 +1,9 @@
 import torch.nn as nn
 import torch.nn.functional as F
 from base import BaseModel
-from torchvision.models import resnet50
-#from unet_parts import *
+#from torchvision.models import resnet50
+from model.res_net import resnet50
+from model.unet_parts import *
 
 
 class MnistModel(BaseModel):

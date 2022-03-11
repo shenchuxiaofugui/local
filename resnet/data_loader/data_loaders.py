@@ -26,7 +26,7 @@ class MnistDataLoader(BaseDataLoader):
 
 
 class CreateNiiDataset(Dataset):
-    def __init__(self, filepath, modals, use_roi=True, transform=None):
+    def __init__(self, filepath, modals, use_roi=True):
         self.fin_data = []
         self.label = []
         self.roi_data = []
@@ -50,13 +50,7 @@ class CreateNiiDataset(Dataset):
 
                         else:
                             fin_tensor = data1_tensor
-                        if transform is not None:
-                            # img2 = fin_tensor.numpy().transpose(1, 2, 0)
-                            # img3 = Image.fromarray(np.uint8(img2))
-                            fin_tensor = transform(fin_tensor)
-                            roi_tensor = transform(roi_tensor)
-                        else:
-                            fin_tensor = F.resize(fin_tensor, [224, 224], interpolation=3)
+                        fin_tensor = F.resize(fin_tensor, [224, 224], interpolation=3)
                         self.roi_data.append(roi_tensor)
                         self.fin_data.append(fin_tensor)
                         self.label.append(eval(files))
@@ -74,6 +68,14 @@ class CreateNiiDataset(Dataset):
 
     def __len__(self):
         return len(self.label)
+
+
+    def transformer(self, transforms):
+        for transform in transforms:
+            fin_tensor = transform(self.fin_data)
+            roi_tensor = transform(self.roi_data)
+            self.fin_data.append(fin_tensor)
+            self.roi_data.append(roi_tensor)
 
     def select_roi(self, number = 1):
         fin_data = []
@@ -114,9 +116,9 @@ class CreateNiiDataset(Dataset):
 
 
 class ClassDataLoader(BaseDataLoader):
-    def __init__(self, data_dir, modals, batch_size, shuffle=True, validation_split=0.0, num_workers=1, use_roi=True, transform=None):
+    def __init__(self, data_dir, modals, batch_size, shuffle=True, validation_split=0.0, num_workers=1, use_roi=True):
         self.data_dir = data_dir
-        self.dataset = CreateNiiDataset(self.data_dir, modals, use_roi, transform)
+        self.dataset = CreateNiiDataset(self.data_dir, modals, use_roi)
         self.dataset.select_roi(3)
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)
 

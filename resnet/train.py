@@ -9,6 +9,7 @@ import model.model as module_arch
 from parse_config import ConfigParser
 from trainer import Trainer
 from utils import prepare_device
+from torchvision import transforms
 import os
 #os.environ["CUDA_VISIBLE_DEVICES"] = "1,2,3    "
 
@@ -21,12 +22,24 @@ torch.backends.cudnn.benchmark = False
 np.random.seed(SEED)
 
 
+train_tfm1 = transforms.Compose([
+    transforms.RandomHorizontalFlip(p=1.0),
+    transforms.ToTensor(),
+])
+train_tfm2 = transforms.Compose([
+    transforms.RandomRotation(30),
+    transforms.ToTensor(),
+])
+
+
+
 def main(config):
     logger = config.get_logger('train')
 
     # setup data_loader instances
     data_loader = config.init_obj('data_loader', module_data)
     valid_data_loader = data_loader.split_validation()
+    #data_loader.dataset.transformer([train_tfm2])
     # build model architecture, then print to console
     model = config.init_obj('arch', module_arch)
     logger.info(model)
