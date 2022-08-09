@@ -51,10 +51,11 @@ class RadiomicsFeatureExtractor:
             roi_image.CopyInformation(raw_image)
             img_arr = sitk.GetArrayFromImage(raw_image)
             img_arr = np.clip(img_arr, 0, np.percentile(img_arr, 99.95))
+            img_arr = (img_arr - np.min(img_arr)) / (np.max(img_arr) - np.min(img_arr))
             #img_arr = exposure.equalize_adapthist(img_arr)  #histogram equalization + gui yi hua
             # img_arr[img_arr>255.0] = 255.0
 
-            img_arr = (img_arr-np.min(img_arr))/(np.max(img_arr) - np.min(img_arr))
+            # img_arr = (img_arr-np.min(img_arr))/(np.max(img_arr) - np.min(img_arr))
             #img_arr = (img_arr - np.mean(img_arr)) / np.std(img_arr)
             image = sitk.GetImageFromArray(img_arr)
             image.CopyInformation(raw_image)
@@ -286,8 +287,8 @@ class RadiomicsFeatureExtractor:
 if __name__ == '__main__':
     # 读取3D的时候把ignore_tolerence改为False
     extractor = RadiomicsFeatureExtractor(r'C:\Users\handsome\Desktop\jiaoben\datachuli\RadiomicsParams.yaml',
-                                          has_label=False, ignore_tolerence=False)
-    extractor.Execute(r'\\mega\syli\dataset\EC_all\EC_all_process_data',     #
-                      key_name_list=['T1CE.nii'],
-                      roi_key=['T1CE_roi.nii.gz'],
-                      store_path=r'\\mega\syli\dataset\EC_all\yuchuli\T1CE\T1CE.csv')
+                                          has_label=False, ignore_tolerence=True)
+    extractor.Execute(r'\\219.228.149.7\syli\dataset\zj_data\jly\clear_up',     #
+                      key_name_list=['ADC.nii'],
+                      roi_key=['ADC_roi.nii'],
+                      store_path=r'D:\python\dataset\ENT\resegment\ADC_1_feature.csv')

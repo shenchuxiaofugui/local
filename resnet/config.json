@@ -27,7 +27,7 @@
             "amsgrad": true
         }
     },
-    "loss": "cross_loss",
+    "loss": "BCEWithLogitsLoss",
     "metrics": [
         "accuracy", "AUC"
     ],

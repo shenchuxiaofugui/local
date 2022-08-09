@@ -27,6 +27,8 @@ setting:
   geometryTolerance: 0.01  #img
   normalize: False
   force2D: True
+  resegmentRange: [0,0.995]
+  resegmentMode: "relative"
 
 # Image types to use: "Original" for unfiltered image, for possible filters, see documentation.
 imageType:

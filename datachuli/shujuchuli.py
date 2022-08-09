@@ -5,8 +5,8 @@ import os
 from pathlib import Path
 import matplotlib.pyplot as plt
 
-dirpath = r'C:\Users\handsome\Documents\data\20220124\1'
-savepath = r'C:\Users\handsome\Documents\data\20220124\max_roi'
+dirpath = r'\\mega\syli\dataset\zj_data\jly\data'
+savepath = r'\\mega\syli\dataset\zj_data\jly\result'
 
 
 def show_img_label(img_array, roi_array, show_index, title):
@@ -30,9 +30,9 @@ def check_img_label(dir_path):
         roi_array = sitk.GetArrayFromImage(roi_img) # [slice index, x ,y]
 
 
-        roi_max_index = np.argmax(np.sum(roi_array, axis=(1,2)))
-        #roi_index = [i for i, e in enumerate(np.sum(roi_array, axis=(1,2)).tolist()) if e != 0]
-        #print('ceng', roi_index)
+        #roi_max_index = np.argmax(np.sum(roi_array, axis=(1,2)))
+        roi_index = [i for i, e in enumerate(np.sum(roi_array, axis=(1,2)).tolist()) if e != 0]
+        print('ceng', roi_index)
 
 
 
@@ -40,26 +40,26 @@ def check_img_label(dir_path):
         ori_img_path = str(candidate_roi[0]).replace('-label', '')
         ori_img = sitk.ReadImage(ori_img_path)
         ori_img_array = sitk.GetArrayFromImage(ori_img)
-        #for roi_max_index in roi_index:
-        plt.figure(i.name, figsize=(18, 9))
-        plt.subplot(2, 4, 1)
-        title = candidate_roi[0].name.replace('-label', '')
-        show_img_label(ori_img_array, roi_array, roi_max_index, title)
+        for roi_max_index in roi_index:
+            plt.figure(i.name, figsize=(18, 9))
+            plt.subplot(2, 4, 1)
+            title = candidate_roi[0].name.replace('-label', '')
+            show_img_label(ori_img_array, roi_array, roi_max_index, title)
 
 
 
-        k = 1
-        for j in candidate_img:
-            #plt.figure()
-            k = k + 1
-            if k > 8:
-                plt.subplot(3, 4, k)
-            else:
-                plt.subplot(2, 4, k)
-            sub_img = sitk.ReadImage(str(j))
-            img_array = sitk.GetArrayFromImage(sub_img)  # [slice index, x ,y]
-            title = j.name[12:-7]
-            show_img_label(img_array, roi_array, roi_max_index, title)
+            k = 1
+            for j in candidate_img:
+                #plt.figure()
+                k = k + 1
+                if k > 8:
+                    plt.subplot(3, 4, k)
+                else:
+                    plt.subplot(2, 4, k)
+                sub_img = sitk.ReadImage(str(j))
+                img_array = sitk.GetArrayFromImage(sub_img)  # [slice index, x ,y]
+                title = j.name[12:-7]
+                show_img_label(img_array, roi_array, roi_max_index, title)
         plt.savefig(savepath + '\\' + i.name + '_' +str(roi_max_index) +'.jpg')
         plt.close()
 

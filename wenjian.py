@@ -79,7 +79,7 @@ def check(filepath, modals):
     all_file = []
     for modal in modals:
         all_file.append(modal + '.nii')
-        all_file.append(modal + '_roi.nii.gz')
+        all_file.append(modal + '_roi.nii')
     all_file.sort()
     for file1 in files:
         path = os.path.join(filepath, file1)
@@ -216,14 +216,14 @@ def check_dirs(df_path, key, dirpath):
 
 
 path = r'\\mega\syli\dataset\EC_seg\EC-old'     #所有文件在一个文件夹，那个文件夹的地址
-new_path = r'\\mega\MRIData\Red-House\EC_seg\clear_up\EC-old'   #要整理到新的文件夹的地址
+new_path = r'\\mega\syli\dataset\zj_data\jly\clear_up'   #要整理到新的文件夹的地址
 df_path = r'\\mega\syli\dataset\EC_seg\process_old_EC_seg(WTP)\process_old_EC1.csv'     #病人信息表的地址（ID在第一列）
 modals = ['T1+', 'DWI', 'T2']   #这次有哪些模态
 #guina(path, new_path)    #整理文件到新地址
 #change_file_name(new_path, df_path)     #修改文件夹的名字
 #rename_3(new_path, modals)        #针对nii文件名字没有模态信息，但是roi文件名由模态信息，且roi文件模态前的字符与原图一一对应
 #batch_rename(new_path, modals)        #批量修改每个文件的名字（roi得是gz结尾）
-check(new_path, ['T1CE', 'DWI', 'T2'])       #第二个参数是文件里应该有的文件数,check_none检查有没有空的文件
+check(new_path, ['t1', 't1_c', 't2', 'ADC'])       #第二个参数是文件里应该有的文件数,check_none检查有没有空的文件
 #check_roi(new_path)
 #check_dirs(df_path, '影像号', new_path)
 
